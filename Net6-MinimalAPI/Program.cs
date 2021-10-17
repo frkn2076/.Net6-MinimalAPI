@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -24,7 +24,7 @@ app.MapPost("/user", (HttpContext context, ApiContext db, Person person) => {
     db.SaveChanges();
     return Results.Created("user", new { Id = person.Id});
 });
-app.Map("/error", () => Results.Problem("An error occurred.", statusCode: 500));
+app.Map("/error", (HttpContext context) => Results.Problem(context.Features.Get<IExceptionHandlerFeature>()?.Error.Message, statusCode: 500));
 
 app.MapSwagger();
 app.UseSwaggerUI();
@@ -37,4 +37,4 @@ class ApiContext : DbContext
     public DbSet<Person>? People { get; set; }
 }
 
-record Person(Guid Id, [Required] string FirstName, [Required] string LastName);
+record Person(Guid Id, string FirstName, string LastName);
