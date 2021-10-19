@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Diagnostics;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,7 +19,7 @@ app.MapGet("/user", (ApiContext db) => db.People?.AsNoTracking().ToList());
 app.MapPost("/user", (HttpContext context, ApiContext db, Person person) => {
     db.People?.Add(person);
     db.SaveChanges();
-    return Results.Created("user", new { Id = person.Id});
+    return Results.Created("user", new { Id = person.Id });
 });
 app.Map("/error", (HttpContext context) => Results.Problem(context.Features.Get<IExceptionHandlerFeature>()?.Error.Message, statusCode: 500));
 
